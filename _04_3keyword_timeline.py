@@ -1,23 +1,14 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Feb 28 20:37:33 2023
-
-@author: songyining
-"""
-
 import matplotlib.pyplot as plt
-import wordcloud as wc
 from read_data import Read_Data
 from read_data import load_csv
 import pandas as pd
 import numpy as np
 import networkx as nx
-from _00_2core_paper import select
+# from _00_2core_paper import select
 
 
 
-def load_csv(dataPath="23.02.14data filtration.xls"):
+def load_csv(dataPath="23.06.21data filtration.xls"):
     data =pd.read_excel(dataPath) #返回的是DataFrame变量
     cols = data.columns #返回全部列名
     dimensison = data.shape #返回数据的格式，数组，（行数，列数）
@@ -56,7 +47,10 @@ def words():
                 if '(' in a1:   
                     a1 = a1.replace('(','')
                 if ')' in a1:   
-                    a1 = a1.replace(')','') 
+                    a1 = a1.replace(')','')
+                if '-' in a1:
+                    a1 = a1.replace(';',':')
+                    a1 = a1.replace('-',';')
                   
             
                 if 'pulsars: general' in a1:
@@ -80,8 +74,11 @@ def words():
                 if 'neutron stars' in a1:   
                     a1 = a1.replace('neutron stars', 'neutron star')
                     
-                if 'methods: data analysis' in a1:   
-                    a1 = a1.replace('methods: data analysis', 'data analysis')   
+                if 'data analysis' in a1 and 'methods: data analysis' not in a1:   
+                    a1 = a1.replace('data analysis', 'methods: data analysis') 
+                if 'methods' == a1:   
+                    a1 = 'methods: data analysis'
+                    
                 if 'neutron stars star' in a1:   
                     a1 = a1.replace('neutron stars star', 'neutron star')   
                 if 'general:general' in a1:   
@@ -144,7 +141,8 @@ def frequency(para,top_N):
             j += 1
     para_num = pd.DataFrame(temp)[0].value_counts()[:top_N]
     return para_num
-
+keywords, pub_year  = words()
+key = frequency(keywords,61)
 
 def plotsss(keywords, pub_year,key):
     ###找到要画的数据
@@ -193,11 +191,8 @@ def plotsss(keywords, pub_year,key):
     
     plt.savefig('4-1.eps', format='eps',bbox_inches='tight')
 
-      
-keywords, pub_year  = words()
-key = frequency(keywords,61)
-a = plotsss(keywords, pub_year,key)
-        
-            
-        
-        
+if __name__ == '__main__':
+    data = load_csv()     
+    keywords, pub_year  = words()
+    key = frequency(keywords,61)
+    a = plotsss(keywords, pub_year,key)
