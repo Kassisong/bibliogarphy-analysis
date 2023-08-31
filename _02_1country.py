@@ -1,10 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Jan  3 22:26:58 2023
-
-@author: songyining
-"""
 import numpy as np
 np.set_printoptions(suppress=True)#不已科学记数法输出
 import numpy as np
@@ -16,7 +9,7 @@ import re
 
 
 
-def load_csv(dataPath = "23.02.14data filtration.xls"):
+def load_csv(dataPath = "23.06.21data filtration.xls"):
     data =pd.read_excel(dataPath) #返回的是DataFrame变量
     cols = data.columns #返回全部列名
     dimensison = data.shape #返回数据的格式，数组，（行数，列数）
@@ -193,11 +186,3 @@ if __name__ == '__main__':
     country_num = frequency(country,51)
     weight = regular(country,country_num)
     draw_country = coapp_map(country_num,weight)
-
-
-
-
-
-
-
-
