@@ -1,9 +1,6 @@
-from read_data import load_csv
 import pandas as pd
 import numpy as np
-import math
 import statistics
-import matplotlib.pyplot as plt
 
 def load_csv(dataPath="23.06.21data filtration.xls"):
     data =pd.read_excel(dataPath) #返回的是DataFrame变量
