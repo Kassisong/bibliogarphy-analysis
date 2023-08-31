@@ -1,16 +1,7 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Jan  4 21:51:46 2023
-
-@author: songyining
-"""
-
 import numpy as np
 np.set_printoptions(suppress=True)#不已科学记数法输出
 import numpy as np
 import matplotlib.pyplot as plt
-import random
 import pandas as pd
 import networkx as nx
 from _00_2core_paper import select
@@ -21,8 +12,10 @@ def author():
     
     #读取论文作者信息
     author = data[:,1]
+    Atype = data[:,13]
     author_set = []
     for i in range(len(author)):
+        # if 'Review' not in Atype[i]:
         a = ''.join(str(i) for i in author[i])
         a = a.upper()
         a = a.replace(" ", "")
@@ -70,6 +63,8 @@ def author():
         
         a = a.split(';',10000)
         author_set.append(a)
+        # else:
+        #     continue
     return author_set
 
 def frequency(para,top_N):
@@ -83,6 +78,18 @@ def frequency(para,top_N):
     para_num = pd.DataFrame(temp)[0].value_counts()[:top_N]
     return para_num
 
+def frequency_new(data):
+    count = [count for sublist in data for count in sublist]
+    
+    # 创建字典用于存储作者及其出现的频次
+    data_freq = {}
+    
+    # 遍历作者列表并进行计数
+    for i in count:
+        data_freq[i] = data_freq.get(i, 0) + 1
+    data_freq = pd.Series(data_freq)
+    data_freq = data_freq.sort_values(ascending=False)
+    return data_freq
 
 #step2建立初始共现矩阵
 #程序初始第一行&第一列加了个频次数据统计（导致矩阵变成N+1*N+1），存粹为了与可阅读行美观。真实的共现矩阵从第二行开始计算的。
@@ -167,7 +174,7 @@ def coapp_map(data_freq,weight):
     #labels标签定义
     nx.draw_networkx_labels(G, pos, font_size=15, font_family='sans-serif')
     plt.axis('off')
-    plt.savefig('fig.png', bbox_inches='tight')
+    plt.savefig('author_net12_5.png', bbox_inches='tight')
     return ()
 
 
@@ -175,6 +182,8 @@ def coapp_map(data_freq,weight):
 if __name__ == '__main__':
     #绘制作者关系图
     author_set = author()
-    author_num = frequency(author_set,122)
+    print(len(author_set))
+    author_numO = frequency_new(author_set)
+    author_num = author_numO[:87]
     weight = regular(author_set,author_num)
     draw_author = coapp_map(author_num,weight)
